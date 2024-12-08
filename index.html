@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nullcel</title>
+</head>
+<style>
+    html, body {
+        overscroll-behavior-x: none;
+        height: 100%;
+    }
+    body {
+        background: black;
+        color: rgb(179, 179, 179);
+        font-family: 'unifont';
+        font-weight: normal;
+        min-width: 60em;
+        user-select: none;
+        -webkit-user-select: none;
+        margin: 0;
+    }
+    @font-face {
+        font-family: 'unifont';
+        src: url('./unifont.otf') format('opentype');
+    }
+    canvas {
+        image-rendering: pixelated;
+        position: fixed;
+        width: 100%;
+        height: calc(100% - 52px);
+        top: 0;
+    }
+    .typedtextparent {
+        display: table;
+        margin: auto;
+    }
+    .typedtext {
+        --bgsize: 5;
+        font-size: 4rem;
+        margin-top: 20vh;
+        text-align: center;
+        animation: type steps(15) 1.5s;
+        background-clip: text;
+        -webkit-background-clip: text;
+        white-space: nowrap;
+        background-image: linear-gradient(to right, var(--purple) 0%, var(--blue) 16.66%, var(--lblue) 33.33%, var(--purple) 50%, var(--blue) 66.66%, var(--lblue) 83.33%, var(--purple) 100%);
+        background-size: calc(var(--bgsize) * 100%) 100%;
+        animation: type steps(10) 1s, linear-rainbow 20s linear infinite;
+    }
+    @keyframes headerBG {
+        from {
+            background: var(--bodybg);
+        }
+        to {
+            background: var(--bg);
+        }
+    }
+    @keyframes fade {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: var(--a);
+        }
+    }
+    @keyframes linear-rainbow {
+        from {
+            background-position-x: 0%;
+        }
+        to {
+            background-position-x: calc(50% * var(--bgsize) / (var(--bgsize) - 1));
+        }
+    }
+    @keyframes type {
+        from {
+            clip-path: polygon(0 0, 0 100%, 0 100%, 0 0);
+        }
+        to {
+            clip-path: polygon(0 0, 0 100%, 99% 100%, 99% 0);
+        }
+    }
+    @media only screen and (max-width: 37rem) {
+        .typedtext {
+            font-size: 1.9rem;
+        }
+        .sectionmenu {
+            font-size: 0.85rem;
+        }
+        .sections {
+            font-size: 0.85rem;
+        }
+        #blobimg {
+            float: unset;
+            margin: auto;
+            margin: 10% 25%;
+        }
+        #clearboth {
+            margin-top: 1rem;
+        }
+        .project {
+            width: 16rem;
+            height: 32rem;
+            margin: 0 auto 6rem auto;
+        }
+        .project > a {
+            left: 1.5rem;
+            top: 16.5rem;
+            font-size: 1.6em;
+        }
+        .project > p {
+            left: 1.5rem;
+            top: 20rem;
+            width: 13rem;
+        }
+    }
+    .project {
+        max-width: 39rem;
+        padding: 0.2rem;
+        margin-bottom: 6rem;
+        background: #111;
+        position: relative;
+        color: white;
+        height: 16rem;
+    }
+    .project img {
+        height: 15rem;
+        width: 15rem;
+        position: absolute;
+        top: 0.2rem;
+        left: 0.2rem;
+        image-rendering: pixelated;
+    }
+    .project > a {
+        color: #ddd;
+        font-size: 2em;
+        position: absolute;
+        top: 1rem;
+        left: 17rem;
+    }
+    .project > .github {
+        width: 2rem;
+        height: 2rem;
+        left: unset;
+        right: 1rem;
+        background: url(./git.png) center/2rem;
+    }
+    .project p {
+        position: absolute;
+        top: 2rem;
+        left: 17rem;
+        opacity: 0.2;
+        max-width: 20rem;
+    }
+    .project:before {
+        position: absolute;
+        content: '';
+        display: block;
+    }
+    #clearboth {
+        clear: both;
+    }
+    .footertitle {
+        font-size: 1.2rem;
+        text-align: center;
+        padding: 1rem 2rem;
+    }
+    .about {
+        text-align: center;
+        margin: 5vh 0;
+        animation: fade 1s ease-out 1.5s backwards;
+    }
+    .bottomline {
+        display: block;
+        animation: linear-rainbow 20s linear infinite, fade 2s ease-out 1.80s backwards;
+        z-index: 1;
+        height: 3px;
+        width: 50%;
+        position: relative;
+        background: rgb(177, 177, 177);
+        fill-opacity: 0;
+    }
+    .sectionmenu {
+        display: flex;
+        justify-content: center;
+        font-size: 20px;
+    }
+    .sectionmenu .btn {
+        margin: 15px;
+        animation: fade 1s ease-out 1.5s backwards;
+        cursor: pointer;
+        opacity: 0.6;
+        --a: 0.6;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .sectionmenu .btn:hover {
+        opacity: 0.75;
+        --a: 0.75;
+    }
+    .sectionmenu .btn:active {
+        opacity: 1;
+        --a: 1;
+    }
+    .sectionmenu .btn#selected {
+        --a: 1;
+        opacity: 1;
+    }
+    .sections {
+        font-size: 20px;
+        animation: fade 1s ease-out 1.5s backwards;
+        flex: 1;
+    }
+    .sections .section {
+        display: none;
+        max-width: 40rem;
+        padding: 5vh;
+    }
+    .sections .section#selected {
+        display: block;
+        margin: auto;
+    }
+    dark {
+        opacity: 0.6;
+        white-space: pre;
+    }
+    value {
+        white-space: pre;
+    }
+    .listbox {
+        display: flex;
+        padding: 2rem 5%;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: calc(51rem + 10%);
+        margin: auto;
+        gap: 1.5rem;
+        animation: fade 1s ease-out 2.5s backwards;
+        flex: 1;
+    }
+    .listbox div {
+        flex-basis: 16rem;
+        flex-grow: 1;
+        text-align: center;
+    }
+</style>
+<body>
+    <div id="header">
+        <div class="typedtextparent">
+            <div class="typedtext">&nbsp;>nullcel&nbsp;</div>
+        </div>
+        <div class="sectionmenu">
+            <div class="btn" ontouchend="section(0)" onclick="section(0)">About</div>
+            <div class="btn" ontouchend="section(1)" onclick="section(1)">Missions</div>
+            <div class="btn" ontouchend="section(2)" onclick="section(2)">Leaderboard</div>
+        </div>
+    </div>
+    <center><div class="bottomline"></div></center>
+    <div class="sections">
+        <div class="section" select id="selected">
+            <div id="pfpimg" title="yep that's me" style="filter: drop-shadow(var(--col) 2px 2px 0);"></div>
+            <dark>what is this:</dark>
+            <value>idk find out yourself</value>
+            <br>
+            <dark>kqdsd:</dark>
+            <value>two and three</value>
+            <br>
+            <dark>one:</dark>
+            <value>two and three</value>
+            <br>
+            <dark>one:</dark>
+            <value>test and test</value>
+            <br>
+            <dark>here:</dark>
+            <value>yes hello aaadafae</value>
+            <br>
+            <br>
+            <div id="clearboth"><b>Null·Cel</b> <span style="opacity:0.5;font-size:80%;cursor: pointer" onclick="this.parentElement.previousElementSibling.play()">/nʌlsɛl/</span> <em style="opacity:0.75;font-size:80%">noun</em> A person (usually a man) who regards himself or herself as being involuntarily celibate and typically expresses no emotions/nothingness and hostility toward those who are sexually active.</div>
+        </div>
+        <div class="section" id>
+            <div class="project">
+                <div class="project">
+                    <img src="./nullmail.png">
+                    <a href="https://nullmail.com/">NullMail</a>
+                    <a class="github" href="https://web.archive.org/web/20240725104830/https://github.com/BlobTheKat/blob-machine"></a>
+                    <p><br>The shittiest email service ever created running on a potato for $0.</p>
+                </div>
+            </div>
+        </div>
+        <div class="section" id>haehehae aeha dhzf zeh</div>
+    </div>
+    <center><div class="bottomline"></div></center>
+    <div class="listbox" style="max-width:calc(33.5rem + 10%)">
+        <div>© Copyright Anon 2024</div>
+        <div class="licensebtn" onclick="this.classList.contains('license') ? this.classList.remove('license') : this.classList.add('license')">License details</div>
+        <div>You're gonna be successful one day</div>
+        <script>((c, choices) => c.innerHTML = choices[Math.floor(Math.random() * choices.length)])(el, ["You smell great btw", "Nice look today!", ":O I love what you did the other day", "Your work is great too!", "You're so nice!", "Can't wait to meet you!", "You're gonna be successful one day", "I admire you :)", "Your ideas are always great ;)", "Sup amigo!"])</script>
+    </div>
+    <script>
+        let sections = document.querySelector(".sections");
+        let menu = document.querySelector(".sectionmenu");
+        let hrefs = ["", "missions", "leaderboard"];
+        function section(id) {
+            for (let i in menu.children) {
+                menu.children[i].id = i == id ? "selected" : "";
+                sections.children[i].id = i == id ? "selected" : "";
+            }
+            location.hash = hrefs[id] || "";
+            footerbline.style.display = footer.style.display = id == 2 ? 'none' : '';
+            if (id == 2) document.body.scrollTo(0, 999999);
+        }
+        section(hrefs.indexOf(location.hash.slice(1)) || 0);
+    </script>
+</body>
+</html>
